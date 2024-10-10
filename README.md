@@ -1,1 +1,1 @@
-idk if i will finish this
+i dont think i will finish this
