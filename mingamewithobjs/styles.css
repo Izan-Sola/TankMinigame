@@ -1,0 +1,102 @@
+.container {
+    background-image: url('imgs/cosa.png');
+    margin: auto;
+    display: block;
+    margin-top: 100px;
+    width: 1000px;
+    height: 450px;
+    border: solid 3px black;
+    background-color: rgba(128, 128, 128, 0.411);
+}
+body {
+    background-color: gray;
+}
+.player {
+    position: relative;
+    width: 70px;
+    height: 35px;
+    background-color: white;
+    top: 375px;
+    left: 8px;
+    border-radius: 5px;
+}
+.cannon {
+    border-radius: 2px;
+    top: -45px;
+    left: 25px;
+    position: relative;
+    width: 18px;
+    height: 65px;
+    background-color: rgb(255, 255, 255);
+}
+.bullet {
+    top: -30px;
+    left: 9px;
+    position: relative;
+    width: 5px;
+    height: 12px;
+    background-color: rgb(255, 255, 255);
+}
+.attackerBullet {
+    position: relative;
+    top: 0px;
+    width: 4px;
+    height: 10px;
+    background-color: rgb(99, 38, 38);
+    rotate: 0;
+    left: 0;
+}
+.wheel {
+    width: 20px;
+    height: 20px;
+    margin-left: 10px;
+    float: left;
+    top: -70px;
+    position: relative;
+    background-color: rgb(255, 255, 255);
+    border-radius: 15px;
+}
+.planesContainer {
+    margin: auto;
+    position: absolute;
+    width: 1000px;
+    height: 130px;
+}
+.planesContainer>.Attacker {
+    position: absolute;
+    width: 80px;
+    height: 30px;
+    background-color: rgb(99, 38, 38);
+
+}
+.planesContainer>.Bomber {
+    position: absolute;
+    width: 100px;
+    height: 35px;
+    background-color: rgb(87, 47, 1);
+}
+.planesContainer>.Supplies, .Medic {
+    position: absolute;
+    width: 100px;
+    height: 35px;
+    background-color: rgb(60, 65, 16);
+}
+#start {
+    position: relative;
+    width: 230px;
+    height: 35px;
+    top: 15px;
+    left: 500px;
+    border: black 3px solid;
+    font-size: 20px;
+}
+#start:hover {
+    background-color: rgb(179, 175, 175);
+    border: black 4px solid;
+}
+.timer-points {
+    position: relative;
+    top: 90px;
+    left: 800px;
+    font-size: 24px;
+}
