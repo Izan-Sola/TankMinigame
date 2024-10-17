@@ -29,15 +29,8 @@ body {
     height: 65px;
     background-color: rgb(255, 255, 255);
 }
-.bullet {
-    top: -30px;
-    left: 9px;
-    position: relative;
-    width: 5px;
-    height: 12px;
-    background-color: rgb(255, 255, 255);
-}
-.attackerBullet {
+
+.fallingObjectbullet {
     position: relative;
     top: 0px;
     width: 4px;
@@ -46,6 +39,17 @@ body {
     rotate: 0;
     left: 0;
 }
+
+.bullet {
+    position: relative;
+    top: 0px;
+    width: 8px;
+    height: 12px;
+    background-color: rgb(255, 255, 255);
+    rotate: 0;
+    left: 0;
+}
+
 .wheel {
     width: 20px;
     height: 20px;
@@ -100,11 +104,12 @@ body {
     left: 800px;
     font-size: 24px;
 }
-.supportDropSupplies  {
+.fallingObjectsupport  {
     position: relative;
     width: 15px;
+    top: 0px;
     height: 15px;
-    color: rgb(68, 105, 31);
+    background-color: rgb(68, 105, 31);
 }
 
 html, body {
