@@ -16,11 +16,11 @@ $(document).ready(function() {
 			$('.player').css('left', tankOffSet)
 		}
 		if (k.key == 'ArrowLeft') {
-			degrees -= 3
+			degrees -= rotationSpeed
 			$('.cannon').css('rotate', degrees + 'deg')
 		}
 		if (k.key == 'ArrowRight') {
-			degrees += 3
+			degrees += rotationSpeed
 			$('.cannon').css('rotate', degrees + 'deg')
 		}
 	});
@@ -28,7 +28,7 @@ $(document).ready(function() {
 		k.stopPropagation();
 		if (k.key == 'ArrowUp' && test == true) {
 			shoot()
-			setTimeout(testfunc, 2000)
+			setTimeout(testfunc, atkDelay)
 			test = false
 		}
 	});
@@ -68,7 +68,7 @@ class plane {
 					dropObj.createFallingObject()
 					existingFallingObjs.push(dropObj)
 				}
-			}, random.integer(1000, 3000))
+			}, random.integer(3000, 5000))
 		}
 		$('.planesContainer').append(`<p style="left: ${leftOffset}px; right: 0px, top: ${this.topOffset}" class="plane ${this.type}" id=${id}> </p>`)
 	}
@@ -98,11 +98,14 @@ const attributes = {
 }
 
 function start() {
+    atkDelay = 2000;
+    maxHP = 250;
 	leftOffset = 0;
 	existingPlanes = [];
 	t = 0;
 	tankOffSet = 0;
 	degrees = 0;
+    rotationSpeed = 3;
 	id = 0;
 	bulletId = 0;
 	points = 0;
@@ -125,7 +128,7 @@ function endRound() {
 
 function updatePlanesInterval() {
 	clearInterval(spawnInterval)
-	if (planeSpawnInterval >= 3000) {
+	if (planeSpawnInterval >= 2000) {
 		planeSpawnInterval -= 500
 	}
 	spawnInterval = setInterval(spawnPlanes, planeSpawnInterval)
@@ -225,7 +228,7 @@ function attackerShot() {
 				const dropObj = new fallingObjects(element.type, 'bullet', element.id, element.topOffset);
 				dropObj.createFallingObject()
 			}
-		}, random.integer(3000, 5000))
+		}, random.integer(1500, 3250))
 
 	})
 	clearInterval(mvAtkBulletsInterval)
@@ -258,8 +261,37 @@ function checkCollisions() {
 
         if(horizontalTouch && verticalTouch) {
 
-            if($(element).hasClass('')) {
+            if($(element).hasClass('fallingObjectbullet')) {
+                //-hp
+                maxHP -= 50
+                $('.hp').css('width', maxHP);
+                element.remove()
+            }
+            else if($(element).hasClass('fallingObjectsupport')) {
+                    o = random.integer(1, 100)
+                    switch (true) {
+                        case (o <= 30):
+                        atkDelay -= 150
+                        $('.alerts').html('<p>Attack speed improved!</p>'); break;
 
+                        case (o = 30 && o <= 60):
+                            if(maxHP <= 220) {
+                                maxHP += 30
+                                $('.hp').css('width', maxHP);
+                                $('.alerts').html('<p>Your tanks has been partially repaired!</p>')                
+                            }
+                            else { $('.hp').css('width', 250); }  break;  
+                           
+                        case (o > 60 && o <= 85):
+                        //cannonrotationspeed
+                        rotationSpeed += 0.35
+                        $('.alerts').html('<p>The cannon now rotates faster!</p>'); break;
+
+                        case (o > 85):
+                        //shieldthattanks1hit
+                        $('.alerts').html('<p>You got a shield!</p>'); break;
+                    }
+                    element.remove()          
             }
         }
     })

@@ -100,8 +100,9 @@ body {
 }
 .timer-points {
     position: relative;
+    width: 400px;
     top: 60px;
-    left: 800px;
+    left: 700px;
     font-size: 24px;
 }
 .fallingObjectsupport  {
@@ -112,7 +113,31 @@ body {
     background-color: rgb(68, 105, 31);
 }
 
+.healthbar {
+    position: absolute;
+    width: 250px;
+    height: 20px;
+    top: 50px;
+    left: 250px;
+    border: black solid 2px;
+    background-color: rgb(255, 255, 255);
+}
+
+.hp {
+    width: 250px;
+    height: 100%;
+    background-color: rgb(105, 158, 26);
+}
+
+.alerts {
+        position: absolute;
+        width: 500px;
+        height: 35px;
+        font-size: 16px;
+        left: 300px
+}
+
 html, body {
     max-width: 100%;
-    overflow-x: hidden;
+
 }
