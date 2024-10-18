@@ -95,53 +95,57 @@ class plane {
 		$('.planesContainer').append(`<p style="left: ${leftOffset}px; right: 0px; top: ${this.topOffset}" class="plane ${this.type}" id=${id}> </p>`)
 	}
 	planeShot(type, id, topOffset){
-	
-		setInterval(function () {
-			if ($('#' + id).css('visibility') != 'hidden') {
-				switch (type) {
-					case 'Attacker':
-						fallingObjType = 'bullet'
-						minDelay = 2000;
-						maxDelay = 3000; 
-						break;
-					case 'Bomber':
-						fallingObjType = 'bomb'
-						minDelay = 3500;
-						maxDelay = 4000; 
-						break;
-					case 'Supplies':
-						fallingObjType = 'Supplies'
-						minDelay = 4000;
-						maxDelay = 6000; 
-						break;
-					case 'Medic':
-						fallingObjType = 'Medic'
-						minDelay = 4000;
-						maxDelay = 7000; 
-						break;
-				}
-				const dropObj = new fallingObjects(type, fallingObjType, id, topOffset)
-				dropObj.createFallingObject()
+		if ($('#' + id).css('visibility') != 'hidden') {
+			switch (type) {
+				case 'Attacker':
+					fallingObjType = 'bullet'
+					delay = [1000, 2000]
+					break;
+				case 'Bomber':
+					fallingObjType = 'bomb'
+					delay = [2500, 4000]
+					break;
+				case 'Supplies':
+					fallingObjType = 'Supplies'
+					delay = [4000, 7000]
+					break;
+				case 'Medic':
+					fallingObjType = 'Medic'
+					delay = [3000, 7000]
+					break;
 			}
-
-		}, Math.floor(Math.random() * (maxDelay - 2000 + 1) + 2000))
+			interval = random.integer(delay[0], delay[1])		
+		
+		this.shotInterval = setInterval(function () {
+			if ($('#' + id).css('visibility') != 'hidden'){
+				createFallingObject(type, fallingObjType, id, topOffset)
+			//dropObj.createFallingObject()
+}
+		}, interval)
+	}
 	}
 }
 
-class fallingObjects {
-	constructor(planeType, dropType, id, topOffset) {
-		this.planeType = planeType
-		this.dropType = dropType
-		this.id = id
-		this.topOffset = topOffset
-	}
-	createFallingObject() {
-		$('.planesContainer').append(`<p style="top: ${this.topOffset}; 
-                left: ${$('#' + this.id).css('left')}" 
-                id=${this.dropType}${this.id} class=fallingObject${this.dropType}></p>`)
-		//console.log(this.planeType, this.dropType, this.id, this.topOffset)
-	}
+// class fallingObjects {
+// 	constructor(planeType, dropType, id, topOffset) {
+// 		this.planeType = planeType
+// 		this.dropType = dropType
+// 		this.id = id
+// 		this.topOffset = topOffset
+// 	}
+// 	createFallingObject() {
+// 		$('.planesContainer').append(`<p style="top: ${this.topOffset}; 
+// 				left: ${$('#' + this.id).css('left')}" 
+// 				id=${this.dropType}${this.id} class=fallingObject${this.dropType}></p>`)
+// 		//console.log(this.planeType, this.dropType, this.id, this.topOffset)
+// 	}
+// }
+function createFallingObject(type, fallingObjType, id, topOffset) {
+        $('.planesContainer').append(`<p style="top: ${topOffset}; 
+                left: ${$('#' + id).css('left')}" 
+                id=${type}${id} class=fallingObject${fallingObjType}></p>`);
 }
+
 
 const attributes = {
 	type: ['Attacker', 'Bomber', 'Supplies', 'Medic'],
@@ -150,8 +154,8 @@ const attributes = {
 }
 
 function start() {
-	minDelay = 0
-	maxDelay = 0
+	interval = 0
+	delay = [0, 0]
 	tankColor = ''
 	fallingObjType = ''
 	drop = ''
@@ -167,7 +171,7 @@ function start() {
 	bulletId = 0
 	points = 0
 	test = true
-	planeSpawnInterval = 6000
+	planeSpawnInterval = 5000
 	mvBulletInterval = setInterval(moveBullet, 100000)
 	mvAtkBulletsInterval = setInterval(moveFallingObjects, 100000)
 	updateSpawnInterval = setInterval(updatePlanesInterval, 10000)
@@ -188,7 +192,7 @@ function endRound() {
 function updatePlanesInterval() {
 	clearInterval(spawnInterval)
 	if (planeSpawnInterval >= 2000) {
-		planeSpawnInterval -= 500
+		planeSpawnInterval -= 700
 	}
 	spawnInterval = setInterval(spawnPlanes, planeSpawnInterval)
 }
@@ -279,7 +283,7 @@ function movePlanes() {
 		}
 	})
 }
-
+ 
 function attackerShot() {
 	clearInterval(mvAtkBulletsInterval)
 	mvAtkBulletsInterval = setInterval(moveFallingObjects, 8)
