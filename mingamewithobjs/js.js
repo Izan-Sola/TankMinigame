@@ -124,7 +124,7 @@ class plane {
 				dropObj.createFallingObject()
 			}
 
-		}, Math.floor(Math.random() * (maxDelay - minDelay + 1) + minDelay))
+		}, Math.floor(Math.random() * (maxDelay - 2000 + 1) + 2000))
 	}
 }
 
@@ -182,6 +182,7 @@ function start() {
 
 function endRound() {
 
+		$('.round-score').html('');
 }
 
 function updatePlanesInterval() {
@@ -225,7 +226,6 @@ function spawnPlanes() {
 }
 
 function shoot() {
-	console.log("SHOOOT")
 	bulletId += 1
 	$('.cannon').append(`<p id=bullet${bulletId} class="bullet"></p>`)
 	clearInterval(mvBulletInterval)
@@ -281,10 +281,6 @@ function movePlanes() {
 }
 
 function attackerShot() {
-	$(existingPlanes).each(function (index, element) {
-
-	
-	})
 	clearInterval(mvAtkBulletsInterval)
 	mvAtkBulletsInterval = setInterval(moveFallingObjects, 8)
 }
@@ -325,7 +321,10 @@ function checkCollisions() {
 			else if ($(element).hasClass('fallingObjectbomb') || $(element).hasClass('fallingObjectbullet')) {
 				$('.shield').css('visibility', 'hidden')
 			}
-			else if ($(element).hasClass('fallingObjectSupplies')) {
+			if(maxHP <= 0) {
+				endRound()
+			}
+			if ($(element).hasClass('fallingObjectSupplies')) {
 				o = random.integer(1, 60)
 
 				switch (true) {
