@@ -8,18 +8,29 @@
     border: solid 3px black;
     background-color: rgba(128, 128, 128, 0.411);
 }
+
 body {
     background-color: gray;
 }
+
 .player {
     position: relative;
     width: 70px;
     height: 35px;
-    background-color: white;
     top: 375px;
     left: 8px;
     border-radius: 5px;
 }
+
+.bullet {
+    position: relative;
+    top: 0px;
+    left: 4px;
+    width: 8px;
+    height: 14px;
+    background-color: rgb(230, 217, 182);
+}
+
 .cannon {
     border-radius: 2px;
     top: -45px;
@@ -27,7 +38,6 @@ body {
     position: relative;
     width: 18px;
     height: 65px;
-    background-color: rgb(255, 255, 255);
 }
 
 .fallingObjectbullet {
@@ -40,12 +50,12 @@ body {
     left: 0;
 }
 
-.bullet {
+.fallingObjectbomb {
     position: relative;
     top: 0px;
-    width: 8px;
+    width: 12px;
     height: 12px;
-    background-color: rgb(255, 255, 255);
+    background-color: rgb(99, 38, 38);
     rotate: 0;
     left: 0;
 }
@@ -57,15 +67,21 @@ body {
     float: left;
     top: -70px;
     position: relative;
-    background-color: rgb(255, 255, 255);
+
     border-radius: 15px;
 }
+
 .planesContainer {
     margin: auto;
     position: absolute;
     width: 1000px;
     height: 130px;
 }
+
+.color {
+    background-color: rgb(255, 255, 255);
+}
+
 .planesContainer>.Attacker {
     position: absolute;
     width: 80px;
@@ -73,44 +89,56 @@ body {
     background-color: rgb(99, 38, 38);
 
 }
+
 .planesContainer>.Bomber {
     position: absolute;
     width: 100px;
     height: 35px;
     background-color: rgb(87, 47, 1);
 }
-.planesContainer>.Supplies, .Medic {
+
+.planesContainer>.Medic {
     position: absolute;
     width: 100px;
     height: 35px;
     background-color: rgb(60, 65, 16);
 }
-#start {
-    position: relative;
-    width: 230px;
-    height: 35px;
-    top: 5px;
-    left: 500px;
-    border: black 3px solid;
-    font-size: 20px;
+
+.planesContainer>.Supplies {
+    position: absolute;
+    width: 90px;
+    height: 28px;
+    background-color: rgb(108, 114, 21);
 }
-#start:hover {
+
+.butto:hover {
     background-color: rgb(179, 175, 175);
     border: black 4px solid;
 }
+
 .timer-points {
     position: relative;
-    width: 400px;
-    top: 60px;
-    left: 700px;
+    width: 500px;
+    height: 40px;
+    top: 40px;
+    left: 950px;
     font-size: 24px;
 }
-.fallingObjectsupport  {
+
+.fallingObjectSupplies {
+    position: relative;
+    width: 25px;
+    top: 0px;
+    height: 15px;
+    background-color: rgb(108, 114, 21);
+}
+
+.fallingObjectMedic {
     position: relative;
     width: 15px;
     top: 0px;
     height: 15px;
-    background-color: rgb(68, 105, 31);
+    background-color: rgb(57, 109, 27);
 }
 
 .healthbar {
@@ -118,9 +146,22 @@ body {
     width: 250px;
     height: 20px;
     top: 50px;
-    left: 250px;
+    left: 300px;
     border: black solid 2px;
     background-color: rgb(255, 255, 255);
+}
+
+
+.shield {
+    position: absolute;
+    width: 280px;
+    height: 40px;
+    top: 40px;
+    left: 285px;
+    border: rgba(177, 162, 33, 0.651) solid 2px;
+    background-color: rgba(160, 139, 24, 0.596);
+    z-index: 10;
+    visibility: hidden;
 }
 
 .hp {
@@ -129,15 +170,45 @@ body {
     background-color: rgb(105, 158, 26);
 }
 
+
 .alerts {
-        position: absolute;
-        width: 500px;
-        height: 35px;
-        font-size: 16px;
-        left: 300px
+    position: absolute;
+    top: 50px;
+    width: 500px;
+    height: 35px;
+    font-size: 16px;
+    left: 700px
 }
 
-html, body {
-    max-width: 100%;
+.menu {
+    position: relative;
+    top: -50px;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(84, 88, 88, 0.658);
+}
 
+.buttons {
+    position: relative;
+    width: 400px;
+    height: 600px;
+    top: 250px;
+    left: 300px;
+}
+
+.button {
+    margin-top: 25px;
+    position: relative;
+    width: 230px;
+    height: 35px;
+    top: 5px;
+    border: black 3px solid;
+    font-size: 20px;
+    background-color: rgb(212, 214, 214);
+}
+
+
+html,
+body {
+    max-width: 100%;
 }

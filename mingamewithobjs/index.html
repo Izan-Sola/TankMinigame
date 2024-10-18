@@ -8,35 +8,37 @@
     <script src="randomjsplugin.js"></script>
     <script src='js.js'></script>
     <script>
-         // var random = new Random.Random();
-          //alert("Random value from 1 to 100: " + random.integer(1, 100));
+        // var random = new Random.Random();
+        //alert("Random value from 1 to 100: " + random.integer(1, 100));
     </script>
 </head>
 
 <body>
 
+    <div class="shield"></div>
     <div class="healthbar">
         <div class="hp"></div>
     </div>
-    <div class="alerts"></div>
+    <div class="alerts">drop msgs</div>
     <div class="timer-points"> <b>Time survived: 0, Total points: 0</b></div>
     <div class="container">
-    <div class="planesContainer"> 
-        
-    </div>
 
-        <div class="player" id="player">
+        <div class="planesContainer"> </div>
+        <div class="player color" id="player">
 
-            <p class="cannon"></p>
-            <p class="wheel"></p>
-            <p class="wheel"></p>
+            <p class="cannon color"></p>
+            <p class="wheel color"></p>
+            <p class="wheel color"></p>
+
+        </div>
+    <div class="menu">
+
+     <div class="buttons">
+            <input type="button" class="button" id="switch-color" value="Switch tank color">
+            <input type="button" class="button" id="start" value="Start Game">
         </div>
     </div>
-
-    <div class="buttons">
-
-        <input type="button" id="start" value="Start Game">
-    </div>
+</div>
 
 </body>
 
