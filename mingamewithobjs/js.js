@@ -75,23 +75,6 @@ class plane {
 				leftOffset = 0
 				break
 		}
-		// if (this.type == 'Supplies' || this.type == 'Medic') {
-		// 	switch (true) {
-		// 		case (this.type == 'Supplies'):
-		// 			drop = 'Supplies'
-		// 			break
-		// 		case (this.type == 'Medic'):
-		// 			drop = 'Medic'
-		// 			break
-		// 	}
-		// 	setTimeout(function () {
-		// 		if ($('#' + this.id).css('visibility') != 'hidden') {
-		// 			const dropObj = new fallingObjects(this.type, drop, id, this.topOffset)
-		// 			dropObj.createFallingObject()
-		// 			existingFallingObjs.push(dropObj)
-		// 		}
-		// 	}, random.integer(3000, 5000))
-		// }
 		$('.planesContainer').append(`<p style="left: ${leftOffset}px; right: 0px; top: ${this.topOffset}" class="plane ${this.type}" id=${id}> </p>`)
 	}
 	planeShot(type, id, topOffset){
