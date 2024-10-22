@@ -78,37 +78,15 @@ class plane {
 
 		$('.planesContainer').append(`<p style="left: ${leftOffset}px; right: 0px; top: ${this.topOffset}" class="plane ${this.type}" id=${id}> </p>`)
 	}
-	planeShot(type, id, topOffset){
+	planeShot(type, fallingObjType, id, topOffset, interval){
 	
 		setInterval(function () {
 			if ($('#' + id).css('visibility') != 'hidden') {
-				switch (type) {
-					case 'Attacker':
-						fallingObjType = 'bullet'
-						minDelay = 2000;
-						maxDelay = 3000; 
-						break;
-					case 'Bomber':
-						fallingObjType = 'bomb'
-						minDelay = 3500;
-						maxDelay = 4000; 
-						break;
-					case 'Supplies':
-						fallingObjType = 'Supplies'
-						minDelay = 4000;
-						maxDelay = 6000; 
-						break;
-					case 'Medic':
-						fallingObjType = 'Medic'
-						minDelay = 4000;
-						maxDelay = 7000; 
-						break;
-				}
 				const dropObj = new fallingObjects(type, fallingObjType, id, topOffset)
 				dropObj.createFallingObject()
 			}
 
-		}, Math.floor(Math.random() * (maxDelay - 2000 + 1) + 2000))
+		}, interval)
 	}
 }
 
@@ -134,8 +112,7 @@ const attributes = {
 }
 
 function start() {
-	minDelay = 0
-	maxDelay = 0
+	delay = []
 	tankColor = ''
 	fallingObjType = ''
 	drop = ''
@@ -206,7 +183,26 @@ function spawnPlanes() {
 
 	existingPlanes.push(planeObj)
 	planeObj.createPlane(id)
-	planeObj.planeShot(planeObj.type, planeObj.id, planeObj.topOffset)
+	switch (attributes.type[selectedAttrs[0]]) {
+		case 'Attacker':
+			fallingObjType = 'bullet'
+			delay = [2000, 3000]
+			break;
+		case 'Bomber':
+			fallingObjType = 'bomb'
+			delay = [3000, 4000]
+			break;
+		case 'Supplies':
+			fallingObjType = 'Supplies'
+			delay = [4000, 6500]
+			break;
+		case 'Medic':
+			fallingObjType = 'Medic'
+			delay = [4500, 7000]
+			break;
+	}
+	interval = random.integer(delay[0], delay[1])
+	planeObj.planeShot(planeObj.type, fallingObjType, planeObj.id, planeObj.topOffset, interval)
 }
 
 function shoot() {
