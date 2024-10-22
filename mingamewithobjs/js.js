@@ -4,7 +4,9 @@ $(document).ready(function () {
 	removedPlanes = []
 	random = new Random.Random()
 	$(document).on('keydown', function (k) {
-
+//TODO: Adjust difficulty (damage, spawn speed, medic/supplies frequency...) 
+//TODO: End round function (display score and various stats)
+//TODO: Database connection 
 		k.stopPropagation()
 
 		if (k.key == 'a' && $('.player').css('left') != '8px') {
