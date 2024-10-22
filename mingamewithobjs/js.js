@@ -254,6 +254,7 @@ function movePlanes() {
 
 			if (horizontalTouch && verticalTouch) {
 				$('#' + element.id).css('visibility', 'hidden')
+				$('#bullet'+bulletId).remove();
 				points = points + 5
 			}
 		}
