@@ -4,9 +4,9 @@ $(document).ready(function () {
 	removedPlanes = []
 	random = new Random.Random()
 	$(document).on('keydown', function (k) {
-//TODO: Adjust difficulty (damage, spawn speed, medic/supplies frequency...) 
-//TODO: End round function (display score and various stats)
-//TODO: Database connection 
+		//TODO: Adjust difficulty (damage, spawn speed, medic/supplies frequency...) 
+		//TODO: End round function (display score and various stats)
+		//TODO: Database connection 
 		k.stopPropagation()
 
 		if (k.key == 'a' && $('.player').css('left') != '8px') {
@@ -34,12 +34,22 @@ $(document).ready(function () {
 			test = false
 		}
 	})
-	$('input').on('mouseup', function (event) {
+	$('input').on('mousedown', function (event) {
+		// if(this.id == 'new-round') {
+		// 	console.log("hsjhgjshgkjdsgkjdsg")
+		// 	start()
+		// 	$('.menu').html(`<div class="buttons">
+        //     				 <input type="button" class="button" id="switch-color" value="Switch tank color">
+        //     				 <input type="button" class="button" id="start" value="Start Game">`)	
 
+			
+		// }
 		if (this.id == 'start') {
 			start()
 		}
-		if (this.id == 'switch-color')
+
+							
+		if (this.id == 'switch-color') {
 
 			tankColor = $('.color').css('background-color')
 
@@ -47,12 +57,13 @@ $(document).ready(function () {
 			case 'rgb(255, 255, 255)':
 				$('.color').css('background-color', 'rgb(99, 38, 38)'); break;
 			case 'rgb(99, 38, 38)':
-				$('.color').css('background-color', 'rgb(38, 69, 117)'); break;
+			$('.color').css('background-color', 'rgb(38, 69, 117)'); break;
 			case 'rgb(38, 69, 117)':
 				$('.color').css('background-color', 'rgb(106, 18, 165)'); break;
 			case 'rgb(106, 18, 165)':
 				$('.color').css('background-color', 'rgb(255, 255, 255)'); break;
 		}
+	}
 	})
 })
 
@@ -65,7 +76,7 @@ class plane {
 		this.type = type
 		this.direction = direction
 		this.speed = speed
-		this.id = id
+		this.id =	 id
 		this.topOffset = topOffset
 	}
 	createPlane(id) {
@@ -80,11 +91,11 @@ class plane {
 
 		$('.planesContainer').append(`<p style="left: ${leftOffset}px; right: 0px; top: ${this.topOffset}" class="plane ${this.type}" id=${id}> </p>`)
 	}
-	planeShot(type, fallingObjType, id, topOffset, interval){
-	
+	planeShot(type, fallingObjType, id, topOffset, interval, direction) {
+
 		setInterval(function () {
 			if ($('#' + id).css('visibility') != 'hidden') {
-				const dropObj = new fallingObjects(type, fallingObjType, id, topOffset)
+				const dropObj = new fallingObjects(type, fallingObjType, id, topOffset, direction)
 				dropObj.createFallingObject()
 			}
 
@@ -93,16 +104,17 @@ class plane {
 }
 
 class fallingObjects {
-	constructor(planeType, dropType, id, topOffset) {
+	constructor(planeType, dropType, id, topOffset, direction) {
 		this.planeType = planeType
 		this.dropType = dropType
 		this.id = id
 		this.topOffset = topOffset
+		this.direction = direction
 	}
 	createFallingObject() {
 		$('.planesContainer').append(`<p style="top: ${this.topOffset}; 
                 left: ${$('#' + this.id).css('left')}" 
-                id=${this.dropType}${this.id} class=fallingObject${this.dropType}></p>`)
+                id=${this.dropType}${this.id} class="fallingObject${this.dropType} ${this.direction}"></p>`)
 		//console.log(this.planeType, this.dropType, this.id, this.topOffset)
 	}
 }
@@ -114,6 +126,10 @@ const attributes = {
 }
 
 function start() {
+	shieldHitCount = 0
+	totalDmgTaken = 0
+	totalPlanesDestroyed = 0
+	totalDmgRepaired = 0
 	delay = []
 	tankColor = ''
 	fallingObjType = ''
@@ -138,14 +154,34 @@ function start() {
 	mvPlaneInterval = setInterval(movePlanes, 40)
 	updatePoints = setInterval(upoints, 1000)
 	//attackerShotInterval = setInterval(attackerShot, 1000)
-	checkCollisionsInterval = setInterval(checkCollisions, 100)
+	checkCollisionsInterval = setInterval(checkCollisions, 90)
 	$('.menu').css('visibility', 'hidden')
-	   mvAtkBulletsInterval = setInterval(moveFallingObjects, 10)
+	mvAtkBulletsInterval = setInterval(moveFallingObjects, 10)
 }
 
 function endRound() {
+	clearInterval(mvBulletInterval)
+	clearInterval(mvAtkBulletsInterval)
+	clearInterval(updateSpawnInterval)
+	clearInterval(spawnInterval)
+	clearInterval(mvPlaneInterval)
+	clearInterval(updatePoints)
+	clearInterval(checkCollisionsInterval)
+	clearInterval(mvAtkBulletsInterval)
+	$('.menu').css('visibility', 'visible')
 
-		$('.round-score').html('');
+	$('.menu').prepend(`<ul class="round-stats">
+						<li> Points earned: ${points} </li>
+						<li> Time survived: ${t} </li>
+						<li> Planes taken down: ${totalPlanesDestroyed} </li>
+						<li> Total damage repaired: ${totalDmgRepaired} </li>
+						<li> Hits taken by shields: ${shieldHitCount} </li>
+						<li> Total damage taken: ${totalDmgTaken} </li>
+						
+					 </u>`)
+					 $('.menu').css('visibility', 'visible');
+
+	
 }
 
 function updatePlanesInterval() {
@@ -174,7 +210,7 @@ function spawnPlanes() {
 	topOffset = random.integer(5, 80)
 
 	if (selectedAttrs[0] == 'Medic' || 'Supplies') {
-		if ((random.integer(1, 10) < 7)) {
+		if ((random.integer(1, 10) < 8)) {
 			selectedAttrs[0] = 0
 		}
 	}
@@ -185,6 +221,7 @@ function spawnPlanes() {
 
 	existingPlanes.push(planeObj)
 	planeObj.createPlane(id)
+
 	switch (attributes.type[selectedAttrs[0]]) {
 		case 'Attacker':
 			fallingObjType = 'bullet'
@@ -204,7 +241,7 @@ function spawnPlanes() {
 			break;
 	}
 	interval = random.integer(delay[0], delay[1])
-	planeObj.planeShot(planeObj.type, fallingObjType, planeObj.id, planeObj.topOffset, interval)
+	planeObj.planeShot(planeObj.type, fallingObjType, planeObj.id, planeObj.topOffset, interval, planeObj.direction)
 }
 
 function shoot() {
@@ -256,7 +293,7 @@ function movePlanes() {
 
 			if (horizontalTouch && verticalTouch) {
 				$('#' + element.id).css('visibility', 'hidden')
-				$('#bullet'+bulletId).remove();
+				$('#bullet' + bulletId).remove();
 				points = points + 5
 			}
 		}
@@ -270,10 +307,22 @@ function attackerShot() {
 
 function moveFallingObjects() {
 	$('.fallingObjectSupplies, .fallingObjectMedic, .fallingObjectbullet, .fallingObjectbomb').each(function (index, element) {
+
 		mvTopA = 0
 		mvTopA = $(element).css('top')
 		mvTopA = mvTopA.split('px')
 		mvTopA = parseInt(mvTopA[0], 10)
+
+		if ($(element).hasClass('fallingObjectbullet')) {
+			mvLeftA = 0
+			mvLeftA = $(element).css('left')
+			mvLeftA = mvLeftA.split('px')
+			mvLeftA = parseInt(mvLeftA[0], 10)
+
+			if ($(element).hasClass('left')) $(element).css('left', mvLeftA + 1.2)
+			else $(element).css('left', mvLeftA - 1.2)
+
+		}
 		$(element).css('top', mvTopA + 2)
 		if (mvTopA > 400) {
 			$(element).remove()
@@ -295,16 +344,19 @@ function checkCollisions() {
 
 			if ($(element).hasClass('fallingObjectbullet') && $('.shield').css('visibility') == 'hidden') {
 				maxHP -= 35
+				totalDmgTaken += 35
 				$('.hp').css('width', maxHP)
 			}
 			else if ($(element).hasClass('fallingObjectbomb') && $('.shield').css('visibility') == 'hidden') {
 				maxHp -= 50
+				totalDmgTaken += 50
 				$('.hp').css('width', maxHP)
 			}
 			else if ($(element).hasClass('fallingObjectbomb') || $(element).hasClass('fallingObjectbullet')) {
+				shieldHitCount += 1
 				$('.shield').css('visibility', 'hidden')
 			}
-			if(maxHP <= 0) {
+			if (maxHP <= 0) {
 				endRound()
 			}
 			if ($(element).hasClass('fallingObjectSupplies')) {
@@ -328,6 +380,7 @@ function checkCollisions() {
 							maxHP += 30
 							$('.hp').css('width', maxHP)
 							$('.alerts').html('<p><(Supply drop)> Your tanks has been partially repaired!</p>')
+							totalDmgRepaired += 30
 						}
 						else { $('.hp').css('width', 250) } break;
 
