@@ -4,8 +4,9 @@ $(document).ready(function () {
 	removedPlanes = []
 	random = new Random.Random()
 	$(document).on('keydown', function (k) {
-		//TODO: Adjust difficulty (damage, spawn speed, medic/supplies frequency...) 
-		//TODO: End round function (display score and various stats)
+		//TODO: Spawn gold coins (gives extra points) on the ground to promote moving around
+		//TODO: Adjust difficulty (damage, spawn speed, medic/supplies frequency...)
+		//TODO: Make the bomb be an actual bomb
 		//TODO: Database connection 
 		k.stopPropagation()
 
@@ -35,20 +36,9 @@ $(document).ready(function () {
 		}
 	})
 	$('input').on('mousedown', function (event) {
-		// if(this.id == 'new-round') {
-		// 	console.log("hsjhgjshgkjdsgkjdsg")
-		// 	start()
-		// 	$('.menu').html(`<div class="buttons">
-        //     				 <input type="button" class="button" id="switch-color" value="Switch tank color">
-        //     				 <input type="button" class="button" id="start" value="Start Game">`)	
-
-			
-		// }
 		if (this.id == 'start') {
 			start()
-		}
-
-							
+		}							
 		if (this.id == 'switch-color') {
 
 			tankColor = $('.color').css('background-color')
@@ -126,10 +116,13 @@ const attributes = {
 }
 
 function start() {
+	existingCoins = 0
+	coinsObtained = 0
 	shieldHitCount = 0
 	totalDmgTaken = 0
 	totalPlanesDestroyed = 0
 	totalDmgRepaired = 0
+	bulletLeftSpeed = 0
 	delay = []
 	tankColor = ''
 	fallingObjType = ''
@@ -147,6 +140,7 @@ function start() {
 	points = 0
 	test = true
 	planeSpawnInterval = 6000
+	coinSpawnInterval = setInterval(coinSpawn, 5000)
 	mvBulletInterval = setInterval(moveBullet, 100000)
 	mvAtkBulletsInterval = setInterval(moveFallingObjects, 100000)
 	updateSpawnInterval = setInterval(updatePlanesInterval, 10000)
@@ -155,8 +149,8 @@ function start() {
 	updatePoints = setInterval(upoints, 1000)
 	//attackerShotInterval = setInterval(attackerShot, 1000)
 	checkCollisionsInterval = setInterval(checkCollisions, 90)
-	$('.menu').css('visibility', 'hidden')
 	mvAtkBulletsInterval = setInterval(moveFallingObjects, 10)
+	$('.menu').css('visibility', 'hidden')
 }
 
 function endRound() {
@@ -168,21 +162,23 @@ function endRound() {
 	clearInterval(updatePoints)
 	clearInterval(checkCollisionsInterval)
 	clearInterval(mvAtkBulletsInterval)
-	$('.menu').css('visibility', 'visible')
 
+	$('.menu').css('visibility', 'visible')
 	$('.menu').prepend(`<ul class="round-stats">
-						<li> Points earned: ${points} </li>
+						<li> Points earned: ${points+(points*(coinsObtained/12))} </li>
 						<li> Time survived: ${t} </li>
+						<li> Coins obtained: ${coinsObtained} </li>
 						<li> Planes taken down: ${totalPlanesDestroyed} </li>
 						<li> Total damage repaired: ${totalDmgRepaired} </li>
 						<li> Hits taken by shields: ${shieldHitCount} </li>
 						<li> Total damage taken: ${totalDmgTaken} </li>
-						
 					 </u>`)
 					 $('.menu').css('visibility', 'visible');
-
-	
 }
+
+function coinSpawn() { 
+	$('.container').append('<p class="coin"></p>')
+ }
 
 function updatePlanesInterval() {
 	clearInterval(spawnInterval)
@@ -225,7 +221,7 @@ function spawnPlanes() {
 	switch (attributes.type[selectedAttrs[0]]) {
 		case 'Attacker':
 			fallingObjType = 'bullet'
-			delay = [2000, 3000]
+			delay = [1500, 2000]
 			break;
 		case 'Bomber':
 			fallingObjType = 'bomb'
@@ -313,17 +309,24 @@ function moveFallingObjects() {
 		mvTopA = mvTopA.split('px')
 		mvTopA = parseInt(mvTopA[0], 10)
 
-		if ($(element).hasClass('fallingObjectbullet')) {
+		if ($(element).hasClass('fallingObjectbullet') || $(element).hasClass('fallingObjectbomb')) {
 			mvLeftA = 0
 			mvLeftA = $(element).css('left')
 			mvLeftA = mvLeftA.split('px')
 			mvLeftA = parseInt(mvLeftA[0], 10)
 
-			if ($(element).hasClass('left')) $(element).css('left', mvLeftA + 1.2)
-			else $(element).css('left', mvLeftA - 1.2)
+			switch (true) {
+				case ($(element).hasClass('fallingObjectbullet')):
+					bulletLeftSpeed = 2; break;
+				case ($(element).hasClass('fallingObjectbomb')):
+					bulletLeftSpeed = 1.2; break;
+			}
+
+			if ($(element).hasClass('left')) $(element).css('left', mvLeftA + bulletLeftSpeed)
+			else $(element).css('left', mvLeftA - bulletLeftSpeed)
 
 		}
-		$(element).css('top', mvTopA + 2)
+		$(element).css('top', mvTopA + 3.5)
 		if (mvTopA > 400) {
 			$(element).remove()
 		}
@@ -334,7 +337,7 @@ function checkCollisions() {
 
 	const tank = document.getElementById('player').getBoundingClientRect()
 
-	$('.fallingObjectbullet, .fallingObjectbomb, .fallingObjectSupplies, .fallingObjectMedic').each(function (index, element) {
+	$('.coin', '.fallingObjectbullet, .fallingObjectbomb, .fallingObjectSupplies, .fallingObjectMedic').each(function (index, element) {
 
 		const test = element.getBoundingClientRect()
 		const horizontalTouch = tank.right >= test.left && tank.left <= test.right
@@ -361,7 +364,6 @@ function checkCollisions() {
 			}
 			if ($(element).hasClass('fallingObjectSupplies')) {
 				o = random.integer(1, 60)
-
 				switch (true) {
 					case (o <= 30):
 						atkDelay -= 150
@@ -383,11 +385,13 @@ function checkCollisions() {
 							totalDmgRepaired += 30
 						}
 						else { $('.hp').css('width', 250) } break;
-
 					case (o > 85):
 						$('.shield').css('visibility', 'visible')
 						$('.alerts').html('<p><(Supply drop)> You got a shield!</p>'); break;
 				}
+			}
+			if($(element).hasClass('coin')){
+				coinsObtained += 1
 			}
 			element.remove()
 		}
