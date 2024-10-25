@@ -2,6 +2,7 @@
 <html>
 
 <head>
+
     <meta charset='utf-8'>
     <link rel='stylesheet' href='styles.css'>
     <script src="./jquery-3.7.1.js"></script>
@@ -10,34 +11,27 @@
 </head>
 
 <body>
-
     <div class="shield"></div>
     <div class="healthbar">
         <div class="hp"></div>
     </div>
     <div class="alerts">drop msgs</div>
-    <div class="timer-points"> <b>Time survived: 0, Total points: 0</b></div>
+    <div class="timer-points"> <b>Time survived: 0, Total points: 0, Coins obtained: 0</b></div>
     <div class="container">
-
         <div class="planesContainer"> </div>
         <div class="player color" id="player">
-
             <p class="cannon color"></p>
             <p class="wheel color"></p>
             <p class="wheel color"></p>
-
         </div>
-    <div class="menu">
- <!-- When losing, display stats like atkspeed, damage avoided with shields, enemies destroyed... -->
-     <div class="buttons">
-            <input type="button" class="button" id="switch-color" value="Switch tank color">
-            <input type="button" class="button" id="start" value="Start Game">
+        <ul clsss="round-stats"></ul>
+        <div class="menu">
+            <div class="buttons">
+                <input type="button" class="button" id="switch-color" value="Switch tank color">
+                <input type="button" class="button" id="start" value="Start Game">
+            </div>
         </div>
     </div>
-
-
-</div>
-
 </body>
 
 </html>

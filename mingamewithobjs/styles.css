@@ -43,8 +43,8 @@ body {
 .fallingObjectbullet {
     position: relative;
     top: 0px;
-    width: 6px;
-    height: 6px;
+    width: 8px;
+    height: 8px;
     background-color: rgb(99, 38, 38);
     rotate: 0;
     left: 0;
@@ -214,8 +214,23 @@ body {
     list-style: none;
     text-align: center;
 }
-.round-stats>li{
+
+.round-stats>li {
     padding-bottom: 8%;
+}
+
+.coin {
+    position: sticky;
+    width: 14px;
+    height: 18px;
+    background-color: gold;
+    bottom: 225px;
+}
+
+.explosion {
+    position: relative;
+    width: 80px;
+    height: 80px;
 }
 html,
 body {
