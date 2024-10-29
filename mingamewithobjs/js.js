@@ -4,9 +4,9 @@ $(document).ready(function () {
 	removedPlanes = []
 	random = new Random.Random()
 	$(document).on('keydown', function (k) {
-		//TODO: Adjust difficulty (damage, spawn speed, medic/supplies frequency...)
-		//TODO: Make the bomb be an actual bomb
-		//TODO: Database connection 
+
+		//TODO: Database connection :Zzz:
+
 		k.stopPropagation()
 
 		if (k.key == 'a' && $('.player').css('left') != '8px') {
@@ -35,37 +35,34 @@ $(document).ready(function () {
 		}
 	})
 	$('input').on('mousedown', function (event) {
-		if (this.id == 'start') {
-			start()
-		}							
+		if (this.id == 'start') { start() }
+
 		if (this.id == 'switch-color') {
 
 			tankColor = $('.color').css('background-color')
 
-		switch (tankColor) {
-			case 'rgb(255, 255, 255)':
-				$('.color').css('background-color', 'rgb(99, 38, 38)'); break;
-			case 'rgb(99, 38, 38)':
-			$('.color').css('background-color', 'rgb(38, 69, 117)'); break;
-			case 'rgb(38, 69, 117)':
-				$('.color').css('background-color', 'rgb(106, 18, 165)'); break;
-			case 'rgb(106, 18, 165)':
-				$('.color').css('background-color', 'rgb(255, 255, 255)'); break;
+			switch (tankColor) {
+				case 'rgb(255, 255, 255)':
+					$('.color').css('background-color', 'rgb(99, 38, 38)'); break;
+				case 'rgb(99, 38, 38)':
+					$('.color').css('background-color', 'rgb(38, 69, 117)'); break;
+				case 'rgb(38, 69, 117)':
+					$('.color').css('background-color', 'rgb(106, 18, 165)'); break;
+				case 'rgb(106, 18, 165)':
+					$('.color').css('background-color', 'rgb(255, 255, 255)'); break;
+			}
 		}
-	}
 	})
 })
 
-function testfunc() {
-	test = true
-}
+function testfunc() { test = true }
 
 class plane {
 	constructor(type, direction, speed, id, topOffset) {
 		this.type = type
 		this.direction = direction
 		this.speed = speed
-		this.id =	 id
+		this.id = id
 		this.topOffset = topOffset
 	}
 	createPlane(id) {
@@ -77,8 +74,29 @@ class plane {
 				leftOffset = 0
 				break
 		}
-
-		$('.planesContainer').append(`<p style="left: ${leftOffset}px; right: 0px; top: ${this.topOffset}" class="plane ${this.type}" id=${id}> </p>`)
+		$('.planesContainer').append(`<p style="left: ${leftOffset}px; right: 0px; top: ${this.topOffset}" 
+																class="plane ${this.type}" id=${id}> </p>`)
+	
+		switch (this.type) {
+			case 'Attacker':
+				fallingObjType = 'bullet'
+				delay = [1500, 2000]
+				break;
+			case 'Bomber':
+				fallingObjType = 'bomb'
+				delay = [2500, 3000]
+				break;
+			case 'Supplies':
+				fallingObjType = 'Supplies'
+				delay = [4000, 6500]
+				break;
+			case 'Medic':
+				fallingObjType = 'Medic'
+				delay = [4500, 7000]
+				break;
+		}
+		interval = random.integer(delay[0], delay[1])
+	    this.planeShot(this.type, fallingObjType, this.id, this.topOffset, interval, this.direction)
 	}
 	planeShot(type, fallingObjType, id, topOffset, interval, direction) {
 
@@ -87,7 +105,6 @@ class plane {
 				const dropObj = new fallingObjects(type, fallingObjType, id, topOffset, direction)
 				dropObj.createFallingObject()
 			}
-
 		}, interval)
 	}
 }
@@ -112,9 +129,12 @@ const attributes = {
 	type: ['Attacker', 'Bomber', 'Supplies', 'Medic'],
 	direction: ['left', 'right'],
 	speed: [1, 2, 3]
+	//MAYBE: 
+	//bulletDirection: [left, right]
 }
 
 function start() {
+	interval = 0
 	existingCoins = 0
 	coinsObtained = 0
 	shieldHitCount = 0
@@ -139,7 +159,7 @@ function start() {
 	points = 0
 	test = true
 	planeSpawnInterval = 6000
-	//coinSpawnInterval = setInterval(coinSpawn, 5000)
+	coinSpawnInterval = setInterval(coinSpawn, 5000)
 	mvBulletInterval = setInterval(moveBullet, 100000)
 	mvAtkBulletsInterval = setInterval(moveFallingObjects, 100000)
 	updateSpawnInterval = setInterval(updatePlanesInterval, 10000)
@@ -164,7 +184,7 @@ function endRound() {
 
 	$('.menu').css('visibility', 'visible')
 	$('.menu').prepend(`<ul class="round-stats">
-						<li> Points earned: ${points+(points*(coinsObtained/12))} </li>
+						<li> Points earned: ${points + (points * (coinsObtained / 12))} </li>
 						<li> Time survived: ${t} </li>
 						<li> Coins obtained: ${coinsObtained} </li>
 						<li> Planes taken down: ${totalPlanesDestroyed} </li>
@@ -172,27 +192,24 @@ function endRound() {
 						<li> Hits taken by shields: ${shieldHitCount} </li>
 						<li> Total damage taken: ${totalDmgTaken} </li>
 					 </u>`)
-					 $('.menu').css('visibility', 'visible');
+	$('.menu').css('visibility', 'visible');
 }
 
-function coinSpawn() { 
-	if(existingCoins < 1) {
-		$('.container').append(`<p class="coin" style="left: ${random.integer(0, 1000)}; "></p>`)
-	}
- }
+function coinSpawn() {
+	if (existingCoins < 2) $('.container').append(`<p class="coin" style="left: ${random.integer(0, 1000)}px; "></p>`)
+}
 
 function updatePlanesInterval() {
 	clearInterval(spawnInterval)
-	if (planeSpawnInterval >= 2000) {
-		planeSpawnInterval -= 500
-	}
+	if (planeSpawnInterval >= 2000) planeSpawnInterval -= 500
 	spawnInterval = setInterval(spawnPlanes, planeSpawnInterval)
 }
 
 function upoints() {
 	t += 1
 	points = points + (t * 0.125)
-	$('.timer-points').html(`<b>Time survived: ${t}, Total points: ${points}, Coins obtained: ${coinsObtained}</b>`)
+	$('.timer-points').html(`<b>Time survived: ${t}, Total points: ${points}, 
+										Coins obtained: ${coinsObtained}</b>`)
 }
 
 function spawnPlanes() {
@@ -207,9 +224,7 @@ function spawnPlanes() {
 	topOffset = random.integer(5, 80)
 
 	if (selectedAttrs[0] == 'Medic' || 'Supplies') {
-		if ((random.integer(1, 10) < 8)) {
-			selectedAttrs[0] = random.integer(0, 1)
-		}
+		if ((random.integer(1, 10) < 8)) selectedAttrs[0] = random.integer(0, 1)
 	}
 	const planeObj = new plane(attributes.type[selectedAttrs[0]],
 		attributes.direction[selectedAttrs[1]],
@@ -217,29 +232,7 @@ function spawnPlanes() {
 		id, topOffset)
 
 	existingPlanes.push(planeObj)
-	planeObj.createPlane(id)
-
-	switch (attributes.type[selectedAttrs[0]]) {
-		case 'Attacker':
-			fallingObjType = 'bullet'
-			delay = [1500, 2000]
-			break;
-		case 'Bomber':
-			fallingObjType = 'bomb'
-			delay = [2700, 3500]
-			break;
-		case 'Supplies':
-			fallingObjType = 'Supplies'
-			delay = [4000, 6500]
-			break;
-		case 'Medic':
-			fallingObjType = 'Medic'
-			delay = [4500, 7000]
-			break;
-	}
-	interval = random.integer(delay[0], delay[1])
-	planeObj.planeShot(planeObj.type, fallingObjType, planeObj.id, planeObj.topOffset, interval, planeObj.direction)
-}
+	planeObj.createPlane(id)}
 
 function shoot() {
 	bulletId += 1
@@ -270,7 +263,7 @@ function movePlanes() {
 
 		if (!(mvSide > 1120 || mvSide < -50)) {
 			if (element.direction == 'left') $('#' + element.id).css('left', mvSide + (3 + (3 * (element.speed / 4))))
-			else if (element.direction == 'right') $('#' + element.id).css('left', mvSide - (3 + (3 * (element.speed / 4))))		
+			else if (element.direction == 'right') $('#' + element.id).css('left', mvSide - (3 + (3 * (element.speed / 4))))
 		}
 
 		else { $('#' + element.id).css('visibility', 'hidden') }
@@ -300,7 +293,8 @@ function attackerShot() {
 }
 
 function moveFallingObjects() {
-	$('.fallingObjectSupplies, .fallingObjectMedic, .fallingObjectbullet, .fallingObjectbomb').each(function (index, element) {
+	$(`.fallingObjectSupplies, .fallingObjectMedic, 
+		.fallingObjectbullet, .fallingObjectbomb`).each(function (index, element) {
 
 		mvTopA = 0
 		mvTopA = $(element).css('top')
@@ -323,11 +317,11 @@ function moveFallingObjects() {
 
 		}
 		$(element).css('top', mvTopA + 3.5)
+
 		if (mvTopA > 400) {
-			if($(element).hasClass('fallingObjectbomb')) {
+			if ($(element).hasClass('fallingObjectbomb'))
 				playExplosionGif(element)
-			}
-			else $(element).remove()		
+			else $(element).remove()
 		}
 	})
 }
@@ -335,11 +329,10 @@ function moveFallingObjects() {
 function playExplosionGif(element) {
 
 	$('.fallingObjectbomb').replaceWith(`<img class="explosion" src="imgs/explosion.gif">`)
-	$('.explosion').css('top', $(element).css('top'))
 	$('.explosion').css('left', $(element).css('left'))
-	
-	setTimeout(function() {
-		$('.explosion').each(function(index, element){
+
+	setTimeout(function () {
+		$('.explosion').each(function (index, element) {
 			$(element).remove()
 		})}, 1000)
 }
@@ -348,7 +341,7 @@ function checkCollisions() {
 
 	const tank = document.getElementById('player').getBoundingClientRect()
 
-	$(`.explosion .coin, .fallingObjectbullet, 
+	$(`.explosion, .coin, .fallingObjectbullet, 
 	   .fallingObjectbomb, .fallingObjectSupplies, 
 	   .fallingObjectMedic`).each(function (index, element) {
 
@@ -364,7 +357,7 @@ function checkCollisions() {
 				$('.hp').css('width', maxHP)
 			}
 			else if ($(element).hasClass('fallingObjectbomb') && $('.shield').css('visibility') == 'hidden') {
-				maxHp -= 50
+				maxHP -= 50
 				totalDmgTaken += 50
 				$('.hp').css('width', maxHP)
 			}
@@ -372,16 +365,14 @@ function checkCollisions() {
 				shieldHitCount += 1
 				$('.shield').css('visibility', 'hidden')
 			}
-			if (maxHP <= 0) {
-				endRound()
-			}
+			if (maxHP <= 0) { endRound() }
+
 			if ($(element).hasClass('fallingObjectSupplies')) {
 				o = random.integer(1, 60)
 				switch (true) {
 					case (o <= 30):
 						atkDelay -= 150
 						$('.alerts').html('<p><(Medic drop)> Attack speed improved!</p>'); break;
-
 					case (o > 30 && o <= 60):
 						rotationSpeed += 0.35
 						$('.alerts').html('<p><(Medic drop)> The cannon now rotates faster!</p>'); break;
@@ -394,20 +385,25 @@ function checkCollisions() {
 						if (maxHP <= 220) {
 							maxHP += 30
 							$('.hp').css('width', maxHP)
-							$('.alerts').html('<p><(Supply drop)> Your tanks has been partially repaired!</p>')
+							$('.alerts').html('<p><(Supply drop)> Your tank has been partially repaired!</p>')
 							totalDmgRepaired += 30
 						}
 						else { $('.hp').css('width', 250) } break;
 					case (o > 85):
 						$('.shield').css('visibility', 'visible')
-						$('.alerts').html('<p><(Supply drop)> You got a shield!</p>'); break;
+						$('.alerts').html('<p><(Supply drop)> You obtained a shield!</p>'); break;
 				}
 			}
-			if($(element).hasClass('coin')) {
+			if ($(element).hasClass('explosion')) {
+				maxHP -= 25
+				totalDmgTaken += 25
+				$('.hp').css('width', maxHP)
+			}
+			if ($(element).hasClass('coin')) {
 				existingCoins -= 1
 				coinsObtained += 1
 			}
-			if(!$(element).hasClass('explosion')) element.remove()
+			if (!$(element).hasClass('explosion')) element.remove()
 		}
 	})
 }

@@ -71,47 +71,45 @@ body {
     border-radius: 15px;
 }
 
+.color {
+    background-color: rgb(255, 255, 255);
+}
+
 .planesContainer {
     margin: auto;
     position: absolute;
     width: 1000px;
     height: 130px;
+
+    .Attacker {
+        position: absolute;
+        width: 80px;
+        height: 30px;
+        background-color: rgb(99, 38, 38);
+    }
+
+    .Bomber {
+        position: absolute;
+        width: 100px;
+        height: 35px;
+        background-color: rgb(87, 47, 1);
+    }
+
+    .Medic {
+        position: absolute;
+        width: 100px;
+        height: 35px;
+        background-color: rgb(60, 65, 16);
+    }
+    .Supplies {
+        position: absolute;
+        width: 90px;
+        height: 28px;
+        background-color: rgb(108, 114, 21);
+    } 
 }
 
-.color {
-    background-color: rgb(255, 255, 255);
-}
-
-.planesContainer>.Attacker {
-    position: absolute;
-    width: 80px;
-    height: 30px;
-    background-color: rgb(99, 38, 38);
-
-}
-
-.planesContainer>.Bomber {
-    position: absolute;
-    width: 100px;
-    height: 35px;
-    background-color: rgb(87, 47, 1);
-}
-
-.planesContainer>.Medic {
-    position: absolute;
-    width: 100px;
-    height: 35px;
-    background-color: rgb(60, 65, 16);
-}
-
-.planesContainer>.Supplies {
-    position: absolute;
-    width: 90px;
-    height: 28px;
-    background-color: rgb(108, 114, 21);
-}
-
-.butto:hover {
+.button:hover {
     background-color: rgb(179, 175, 175);
     border: black 4px solid;
 }
@@ -213,24 +211,29 @@ body {
     left: 34%;
     list-style: none;
     text-align: center;
+
+    li{
+        padding-bottom: 8%;
+    }
 }
 
-.round-stats>li {
-    padding-bottom: 8%;
-}
+/* .round-stats>li {
+    
+} */
 
 .coin {
     position: sticky;
     width: 14px;
     height: 18px;
     background-color: gold;
-    bottom: 225px;
+    bottom: 300px;
 }
 
 .explosion {
     position: relative;
-    width: 80px;
-    height: 80px;
+    top: 350px;
+    width: 110px;
+    height: 90px;
 }
 html,
 body {
