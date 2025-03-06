@@ -6,6 +6,7 @@ $(document).ready(function () {
 	$(document).on('keydown', function (k) {
 
 		//TODO: Database connection :Zzz:
+		//
 
 		k.stopPropagation()
 
@@ -17,18 +18,18 @@ $(document).ready(function () {
 			tankOffSet += 8
 			$('.player').css('left', tankOffSet)
 		}
-		if (k.key == 'ArrowLeft') {
+		if (k.key == 'c') {
 			degrees -= rotationSpeed
 			$('.cannon').css('rotate', degrees + 'deg')
 		}
-		if (k.key == 'ArrowRight') {
+		if (k.key == 'f') {
 			degrees += rotationSpeed
 			$('.cannon').css('rotate', degrees + 'deg')
 		}
 	})
 	$(document).on('keyup', function (k) {
 		k.stopPropagation()
-		if (k.key == 'ArrowUp' && test == true) {
+		if (k.key == 'w' && test == true) {
 			shoot()
 			setTimeout(testfunc, atkDelay)
 			test = false
@@ -58,12 +59,13 @@ $(document).ready(function () {
 function testfunc() { test = true }
 
 class plane {
-	constructor(type, direction, speed, id, topOffset) {
+	constructor(type, direction, speed, id, topOffset, bulletDirection) {
 		this.type = type
 		this.direction = direction
 		this.speed = speed
 		this.id = id
 		this.topOffset = topOffset
+		this.bulletDirection = bulletDirection
 	}
 	createPlane(id) {
 		switch (this.direction) {
@@ -128,9 +130,8 @@ class fallingObjects {
 const attributes = {
 	type: ['Attacker', 'Bomber', 'Supplies', 'Medic'],
 	direction: ['left', 'right'],
-	speed: [1, 2, 3]
-	//MAYBE: 
-	//bulletDirection: [left, right]
+	speed: [1, 2, 3],
+	bulletDirection: ['left', 'right']
 }
 
 function start() {
@@ -157,18 +158,19 @@ function start() {
 	id = 0
 	bulletId = 0
 	points = 0
+	lastPlane = null
 	test = true
 	planeSpawnInterval = 6000
 	coinSpawnInterval = setInterval(coinSpawn, 5000)
 	mvBulletInterval = setInterval(moveBullet, 100000)
-	mvAtkBulletsInterval = setInterval(moveFallingObjects, 100000)
+    mvAtkBulletsInterval = setInterval(moveFallingObjects, 100000)
 	updateSpawnInterval = setInterval(updatePlanesInterval, 10000)
 	spawnInterval = setInterval(spawnPlanes, planeSpawnInterval)
 	mvPlaneInterval = setInterval(movePlanes, 40)
 	updatePoints = setInterval(upoints, 1000)
-	//attackerShotInterval = setInterval(attackerShot, 1000)
+	attackerShotInterval = setInterval(attackerShot, 1000)
 	checkCollisionsInterval = setInterval(checkCollisions, 40)
-	mvAtkBulletsInterval = setInterval(moveFallingObjects, 10)
+	//mvAtkBulletsInterval = setInterval(moveFallingObjects, 20)
 	$('.menu').css('visibility', 'hidden')
 }
 
@@ -217,7 +219,7 @@ function spawnPlanes() {
 	selectedAttrs = []
 	id += 1
 
-	for (i = 0; i < 3; i++) {
+	for (i = 0; i < 4; i++) {
 		randomAttribute = random.integer(0, Object.values(attributes)[i].length - 1)
 		selectedAttrs.push(randomAttribute)
 	}
@@ -229,9 +231,12 @@ function spawnPlanes() {
 	const planeObj = new plane(attributes.type[selectedAttrs[0]],
 		attributes.direction[selectedAttrs[1]],
 		attributes.speed[selectedAttrs[2]],
-		id, topOffset)
+		id, topOffset, attributes.bulletDirection[selectedAttrs[3]])
+
+	console.log(selectedAttrs)
 
 	existingPlanes.push(planeObj)
+	lastPlane = planeObj
 	planeObj.createPlane(id)}
 
 function shoot() {
@@ -293,48 +298,47 @@ function attackerShot() {
 }
 
 function moveFallingObjects() {
+
 	$(`.fallingObjectSupplies, .fallingObjectMedic, 
 		.fallingObjectbullet, .fallingObjectbomb`).each(function (index, element) {
 
-		mvTopA = 0
-		mvTopA = $(element).css('top')
-		mvTopA = mvTopA.split('px')
-		mvTopA = parseInt(mvTopA[0], 10)
+			var offset = $(element).offset()
+
+			$(element).offset({
+				top: offset.top + 0.65,
+				left: offset.left
+			})	
 
 		if ($(element).hasClass('fallingObjectbullet') || $(element).hasClass('fallingObjectbomb')) {
-			mvLeftA = 0
-			mvLeftA = $(element).css('left')
-			mvLeftA = mvLeftA.split('px')
-			mvLeftA = parseInt(mvLeftA[0], 10)
-
+			
 			switch (true) {
-				case ($(element).hasClass('fallingObjectbullet')): bulletLeftSpeed = 2; break;
-				case ($(element).hasClass('fallingObjectbomb')): bulletLeftSpeed = 1; break;
+				case (lastPlane.bulletDirection == 'right'): $(element).offset({left: offset.left + 0.18})  ; break;
+				case (lastPlane.bulletDirection == 'left'):	$(element).offset({left: offset.left - 0.18}) ; break;
 			}
-
-			if ($(element).hasClass('left')) $(element).css('left', mvLeftA + bulletLeftSpeed)
-			else $(element).css('left', mvLeftA - bulletLeftSpeed)
-
 		}
-		$(element).css('top', mvTopA + 3.5)
-
-		if (mvTopA > 400) {
-			if ($(element).hasClass('fallingObjectbomb'))
-				playExplosionGif(element)
-			else $(element).remove()
+		
+		Ypos = 0
+		Ypos = $(element).css('top')
+		Ypos = Ypos.split('px')
+		Ypos = parseInt(Ypos[0], 10)	
+		console.log(Ypos)
+		if (Ypos > 400) {
+			// if ($(element).hasClass('fallingObjectbomb'))
+			// 	playExplosionGif(element)
+			// else 
+			$(element).remove()
 		}
 	})
 }
 
 function playExplosionGif(element) {
+	// $('.fallingObjectbomb').replaceWith(`<img class="explosion" src="imgs/explosion.gif">`)
+	// $('.explosion').css('left', $(element).css('left'))
 
-	$('.fallingObjectbomb').replaceWith(`<img class="explosion" src="imgs/explosion.gif">`)
-	$('.explosion').css('left', $(element).css('left'))
-
-	setTimeout(function () {
-		$('.explosion').each(function (index, element) {
-			$(element).remove()
-		})}, 1000)
+	// setTimeout(function () {
+	// 	$('.explosion').each(function (index, element) {
+	// 		$(element).remove()
+	// 	})}, 800)
 }
 
 function checkCollisions() {
