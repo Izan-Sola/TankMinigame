@@ -183,6 +183,7 @@ function endRound() {
 	clearInterval(updatePoints)
 	clearInterval(checkCollisionsInterval)
 	clearInterval(mvAtkBulletsInterval)
+	clearInterval(coinSpawnInterval)
 
 	$('.menu').css('visibility', 'visible')
 	$('.menu').prepend(`<ul class="round-stats">
@@ -232,8 +233,6 @@ function spawnPlanes() {
 		attributes.direction[selectedAttrs[1]],
 		attributes.speed[selectedAttrs[2]],
 		id, topOffset, attributes.bulletDirection[selectedAttrs[3]])
-
-	console.log(selectedAttrs)
 
 	existingPlanes.push(planeObj)
 	lastPlane = planeObj
@@ -321,24 +320,26 @@ function moveFallingObjects() {
 		Ypos = $(element).css('top')
 		Ypos = Ypos.split('px')
 		Ypos = parseInt(Ypos[0], 10)	
-		console.log(Ypos)
+
 		if (Ypos > 400) {
-			// if ($(element).hasClass('fallingObjectbomb'))
-			// 	playExplosionGif(element)
-			// else 
-			$(element).remove()
+			if ($(element).hasClass('fallingObjectbomb'))
+				playExplosionGif(element)
+			else $(element).remove()
 		}
 	})
 }
 
 function playExplosionGif(element) {
-	// $('.fallingObjectbomb').replaceWith(`<img class="explosion" src="imgs/explosion.gif">`)
-	// $('.explosion').css('left', $(element).css('left'))
+	$('.fallingObjectbomb').replaceWith(`<img class="explosion" src="imgs/explosion.gif">`)
 
-	// setTimeout(function () {
-	// 	$('.explosion').each(function (index, element) {
-	// 		$(element).remove()
-	// 	})}, 800)
+	console.log($(element).offset())
+
+	$('.explosion').css('left', $(element).css('left'))
+
+	setTimeout(function () {
+		$('.explosion').each(function (index, element) {
+			$(element).remove()
+		})}, 800)
 }
 
 function checkCollisions() {
@@ -399,8 +400,8 @@ function checkCollisions() {
 				}
 			}
 			if ($(element).hasClass('explosion')) {
-				maxHP -= 25
-				totalDmgTaken += 25
+				maxHP -= 2
+				totalDmgTaken += 2
 				$('.hp').css('width', maxHP)
 			}
 			if ($(element).hasClass('coin')) {
