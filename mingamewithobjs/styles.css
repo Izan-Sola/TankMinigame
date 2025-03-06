@@ -223,10 +223,11 @@ body {
 
 .coin {
     position: absolute;
-    width: 14px;
-    height: 18px;
+    width: 16px;
+    height: 20px;
     background-color: gold;
-    bottom: 300px;
+    border-radius: 8px;
+    bottom: 200px;
 }
 
 .explosion {
