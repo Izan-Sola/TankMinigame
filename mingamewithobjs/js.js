@@ -59,13 +59,12 @@ $(document).ready(function () {
 function testfunc() { test = true }
 
 class plane {
-	constructor(type, direction, speed, id, topOffset, bulletDirection) {
+	constructor(type, direction, speed, id, topOffset) {
 		this.type = type
 		this.direction = direction
 		this.speed = speed
 		this.id = id
 		this.topOffset = topOffset
-		this.bulletDirection = bulletDirection
 	}
 	createPlane(id) {
 		switch (this.direction) {
@@ -123,15 +122,13 @@ class fallingObjects {
 		$('.planesContainer').append(`<p style="top: ${this.topOffset}; 
                 left: ${$('#' + this.id).css('left')}" 
                 id=${this.dropType}${this.id} class="fallingObject${this.dropType} ${this.direction}"></p>`)
-		//console.log(this.planeType, this.dropType, this.id, this.topOffset)
 	}
 }
 
 const attributes = {
 	type: ['Attacker', 'Bomber', 'Supplies', 'Medic'],
 	direction: ['left', 'right'],
-	speed: [1, 2, 3],
-	bulletDirection: ['left', 'right']
+	speed: [1, 2, 3]
 }
 
 function start() {
@@ -158,7 +155,6 @@ function start() {
 	id = 0
 	bulletId = 0
 	points = 0
-	lastPlane = null
 	test = true
 	planeSpawnInterval = 6000
 	coinSpawnInterval = setInterval(coinSpawn, 5000)
@@ -170,7 +166,6 @@ function start() {
 	updatePoints = setInterval(upoints, 1000)
 	attackerShotInterval = setInterval(attackerShot, 1000)
 	checkCollisionsInterval = setInterval(checkCollisions, 40)
-	//mvAtkBulletsInterval = setInterval(moveFallingObjects, 20)
 	$('.menu').css('visibility', 'hidden')
 }
 
@@ -220,7 +215,7 @@ function spawnPlanes() {
 	selectedAttrs = []
 	id += 1
 
-	for (i = 0; i < 4; i++) {
+	for (i = 0; i < 3; i++) {
 		randomAttribute = random.integer(0, Object.values(attributes)[i].length - 1)
 		selectedAttrs.push(randomAttribute)
 	}
@@ -232,10 +227,9 @@ function spawnPlanes() {
 	const planeObj = new plane(attributes.type[selectedAttrs[0]],
 		attributes.direction[selectedAttrs[1]],
 		attributes.speed[selectedAttrs[2]],
-		id, topOffset, attributes.bulletDirection[selectedAttrs[3]])
+		id, topOffset)
 
 	existingPlanes.push(planeObj)
-	lastPlane = planeObj
 	planeObj.createPlane(id)}
 
 function shoot() {
@@ -304,15 +298,15 @@ function moveFallingObjects() {
 			var offset = $(element).offset()
 
 			$(element).offset({
-				top: offset.top + 0.65,
+				top: offset.top + 0.80,
 				left: offset.left
 			})	
 
 		if ($(element).hasClass('fallingObjectbullet') || $(element).hasClass('fallingObjectbomb')) {
-			
+
 			switch (true) {
-				case (lastPlane.bulletDirection == 'right'): $(element).offset({left: offset.left + 0.18})  ; break;
-				case (lastPlane.bulletDirection == 'left'):	$(element).offset({left: offset.left - 0.18}) ; break;
+				case ($(element).hasClass('left')): $(element).offset({left: offset.left + 0.22}); break;
+				case ($(element).hasClass('right')): $(element).offset({left: offset.left - 0.22}) ; break;
 			}
 		}
 		
