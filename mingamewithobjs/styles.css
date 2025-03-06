@@ -227,7 +227,7 @@ body {
     height: 20px;
     background-color: gold;
     border-radius: 8px;
-    bottom: 80px;
+    transform: translateY(-675%);
 }
 
 .explosion {

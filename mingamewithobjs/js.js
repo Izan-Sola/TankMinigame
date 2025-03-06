@@ -194,7 +194,7 @@ function endRound() {
 }
 
 function coinSpawn() {
-	if (existingCoins < 2) $('.container').append(`<p class="coin" style="left: ${random.integer(0, 1000)}px; "></p>`)
+	if (existingCoins < 2) $('.container').append(`<p class="coin" style="left: ${random.integer(0, 1000)}px; }"></p>`)
 }
 
 function updatePlanesInterval() {
