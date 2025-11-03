@@ -9,7 +9,7 @@ $(document).ready(function () {
 		//
 
 		k.stopPropagation()
-
+		//k.preventDefault()
 		if (k.key == 'a' && $('.player').css('left') != '8px') {
 			tankOffSet -= 8
 			$('.player').css('left', tankOffSet)
@@ -280,6 +280,8 @@ function movePlanes() {
 				$('#' + element.id).css('visibility', 'hidden')
 				$('#bullet' + bulletId).remove();
 				points = points + 5
+				console.log("Plane Destroyed!")
+				totalPlanesDestroyed += 1
 			}
 		}
 	})
